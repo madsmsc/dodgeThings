@@ -1,24 +1,24 @@
-from src.Util import vec, Const
+from src.Vector import Vector
+from src.Enemy import Enemy
+from src.Player import Player
+from src.Util import Const
 
 class State:
-    linePos = vec(0, 0)
-    ballPos = vec(60, 250)
-    lines = []
+    player: Player = None
+    enemies = []
 
-    def nextStep(self):
-        normal = vec(self.ballPos.x - self.linePos.x, self.ballPos.y - self.linePos.y)
-        normal = normal.normalize()
-        normal.x *= Const.LINE_STEP
-        normal.y *= Const.LINE_STEP
-        self.linePos.x += normal.x
-        self.linePos.y += normal.y
-        # print('to ' + str(normal.x) + ', ' + str(normal.y))
+    def __init__(self):
+        self.player = Player((500, 300))
+        self.enemies.append(Enemy(Enemy.MobType.SLOW, (100, 250)))
+        self.enemies.append(Enemy(Enemy.MobType.SLOW, (60, 220)))
+        self.enemies.append(Enemy(Enemy.MobType.SLOW, (400, 420)))
+        self.enemies.append(Enemy(Enemy.MobType.SLOW, (360, 380)))
+        self.enemies.append(Enemy(Enemy.MobType.SLOW, (220, 300)))
 
-    def addLine(self):
-        newLine = {'from': vec(self.linePos.x, self.linePos.y),
-                   'to': vec(0, 0)}
-        self.nextStep()
-        newLine['to'].x = self.linePos.x
-        newLine['to'].y = self.linePos.y
-        self.lines.append(newLine)
-        # print(f"new line ({newLine['from'].x}), {newLine['from'].y}) , ({newLine['to'].x}, {newLine['to'].y})")
+    def update(self, tick: float):
+        self.player.update()
+        for enemy in self.enemies:
+            enemy.update(self.player, tick)
+            dist = self.player.pos.distance_to(enemy.pos)
+            if dist < Const.WIN_DIST:
+                self.player.currentHealth -= enemy.doDamage()
