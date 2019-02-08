@@ -1,11 +1,15 @@
 import pygame
 from src.State import State
 from src.Util import Color, Const
+from src.SkillController import SkillController
 from src.GuiController import GuiController
+from src.MapController import MapController
 from src.Vector import Vector
 
 class Main:
     gc = GuiController.getInstance()
+    mc = MapController.getInstance()
+    sc = SkillController.getInstance()
     state = State()
     screen = None
     clock = None
@@ -16,22 +20,32 @@ class Main:
                 return True
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 self.state.player.moveTo = Vector(pygame.mouse.get_pos())
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+                self.sc.useSkill(0)
         return False
 
     def draw(self):
         self.screen.fill(Color.BLACK)
+        self.blockolize()
         facePos = (self.state.player.pos.x - 25, self.state.player.pos.y - 23)
-        self.screen.blit(self.gc.icons[0][2], facePos)
+        self.screen.blit(self.gc.iconPlayer, facePos)
         for enemy in self.state.enemies:
-            pygame.draw.circle(self.screen, Color.BLUE, enemy.int(), 10)
+            self.screen.blit(self.gc.iconBully, enemy.int())
         self.gc.render()
         pygame.display.flip()
+
+    def blockolize(self):
+        for x in range(self.mc.blocks):
+            for y in range(self.mc.blocks):
+                self.screen.fill(self.mc.map[x][y],
+                                 pygame.Rect((x * self.mc.blocksize, y * self.mc.blocksize),
+                                 (self.mc.blocksize, self.mc.blocksize)))
 
     def gameLoop(self):
         self.clock.tick(Const.CLOCK_TICK)
         if self.stopEvent():
             return False
-        if self.state.player.currentHealth <= 0:
+        if self.state.player.curHealth <= 0:
             print('you lose!')
             return False
         self. state.update(1.0 / Const.CLOCK_TICK)
@@ -44,12 +58,12 @@ class Main:
         self.gc.setup(self.state, self.screen)
         pygame.display.set_caption(Const.TITLE)
         self.clock = pygame.time.Clock()
-
+        self.mc.makeMap()
+        self.sc.setup(self.state.player)
         while 1:
             if not self.gameLoop():
                 break
         pygame.quit()
-
 
 if __name__ == '__main__':
     Main().start()

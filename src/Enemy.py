@@ -1,16 +1,10 @@
 ﻿from enum import Enum
 from src.Char import Char
 from src.Player import Player
-from src.LootController import LootController
+from src.LootController import LootController, Currency, Rarity
 from src.MapController import MapController
 
 class Enemy(Char):
-    class Rarity(Enum):
-        COMMON = 1
-        UNCOMMON = 2
-        RARE = 3
-        EPIC = 4
-
     class MobType(Enum):
         SLOW = 1
         FAST = 2
@@ -33,26 +27,26 @@ class Enemy(Char):
         self.moveSpeed = 0.2
         self.attackSpeed = 2
         self.expWorth = 10
-        self.maxHealth = 10
-        self.currentHealth = 10
+        self.maxHealth = 5
+        self.curHealth = self.maxHealth
         self.damage = 1
         self.level = 1
-        self.rarity = self.Rarity.COMMON
+        self.rarity = Rarity.COMMON
         self.mobType = self.MobType.SLOW
 
     def makeFastMob(self):
         self.moveSpeed = 0.7
         self.attackSpeed = 1
         self.expWorth = 20
-        self.maxHealth = 10
-        self.currentHealth = 10
+        self.maxHealth = 5
+        self.curHealth = self.maxHealth
         self.damage = 1
         self.level = 1
-        self.rarity = self.Rarity.COMMON
+        self.rarity = Rarity.COMMON
         self.mobType = self.MobType.FAST
 
     def update(self, player: Player, tick: float):
-        if self.currentHealth <= 0:
+        if self.curHealth <= 0:
             self.die()
         if self.hitCooldown > 0:
             self.hitCooldown -= tick
@@ -61,9 +55,9 @@ class Enemy(Char):
     def die(self):
         self.dead = True
         lc = LootController.getInstance()
-        loot: [LootController.Currency] = lc.roll()
+        loot: [Currency] = lc.roll(self.level)
         mc = MapController.getInstance()
-        mc.addLoot(loot, self.pos)
+        mc.addLoot(loot)
 
     def doDamage(self) -> int:
         if self.hitCooldown <= 0:
@@ -72,4 +66,4 @@ class Enemy(Char):
         return 0
 
     def takeDamage(self, amount: int):
-        self.currentHealth -= amount
+        self.curHealth -= amount

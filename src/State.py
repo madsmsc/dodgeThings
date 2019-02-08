@@ -5,6 +5,7 @@ from src.Util import Const
 class State:
     player: Player = None
     enemies = []
+    deadEnemies = []
 
     def __init__(self):
         self.player = Player((500, 300))
@@ -18,6 +19,15 @@ class State:
         self.player.update()
         for enemy in self.enemies:
             enemy.update(self.player, tick)
+            if enemy.dead:
+                self.enemies.remove(enemy)
+                self.deadEnemies.append(enemy)
             dist = self.player.pos.distance_to(enemy.pos)
             if dist < Const.WIN_DIST:
-                self.player.currentHealth -= enemy.doDamage()
+                self.player.curHealth -= enemy.doDamage()
+
+    def enemiesTakeNovaDamage(self, radius: int, amount: int):
+        for enemy in self.enemies:
+            dist = self.player.pos.distance_to(enemy.pos)
+            if dist < radius:
+                enemy.takeDamage(amount)

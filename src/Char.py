@@ -6,7 +6,9 @@ class Char(Node):
     moveSpeed: float = 0
     attackSpeed: float = 0
     maxHealth: int = 0
-    currentHealth: int = 0
+    curHealth: int = 0
+    maxPower: int = 0
+    curPower: int = 0
     damage: int = 0
     hitCooldown: float = 0
     level: int = 0
