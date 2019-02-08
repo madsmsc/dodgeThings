@@ -2,13 +2,21 @@ import pygame
 from src.Util import Color, Const
 from src.State import State
 
-class GUI:
+class GuiController:
+    __instance = None
+
+    @staticmethod
+    def getInstance():
+        if GuiController.__instance is None:
+            GuiController.__instance = GuiController()
+        return GuiController.__instance
+
     state: State = None
     screen: pygame.Surface = None
     font = None
     icons = []
 
-    def __init__(self, state, screen):
+    def setup(self, state, screen):
         self.state = state
         self.screen = screen
         self.font = pygame.font.SysFont("Comic Sans MS", 30)

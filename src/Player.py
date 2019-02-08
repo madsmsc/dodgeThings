@@ -1,7 +1,7 @@
-from src.Node import Node
+from src.Char import Char
 from src.Vector import Vector
 
-class Player(Node):
+class Player(Char):
     moveTo: Vector = None
 
     def __init__(self,  pos: (int, int) = (0, 0)):

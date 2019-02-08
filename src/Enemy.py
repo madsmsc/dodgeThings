@@ -1,9 +1,10 @@
 ﻿from enum import Enum
-from src.Node import Node
+from src.Char import Char
 from src.Player import Player
-from src.Vector import Vector
+from src.LootController import LootController
+from src.MapController import MapController
 
-class Enemy(Node):
+class Enemy(Char):
     class Rarity(Enum):
         COMMON = 1
         UNCOMMON = 2
@@ -17,6 +18,7 @@ class Enemy(Node):
     rarity: int = 0
     mobType: MobType = 1
     expWorth: int = 0
+    dead: bool = False
 
     def __init__(self, mobType: MobType, pos: (int, int) = (0, 0)):
         super().__init__(pos)
@@ -57,27 +59,11 @@ class Enemy(Node):
         self.move(player.pos)
 
     def die(self):
-        self.dropLoot()
-        # set dead flag and render as dead mob
-
-    def dropLoot(self):
-        pass
-        """
-        playerLevel.currentXP += expWorth;
-        for (int i = 0; i < lootRolls; i++) {
-            Currency c = lootController.roll(level - playerLevel.level);
-            if (c != null) {
-                float x = c.transform.position.x + transform.position.x;
-                float z = c.transform.position.z + transform.position.z;
-                c.transform.position = new Vector3(x, -0.9f, z);
-                c.itemName = c.type.ToString();
-                c.transform.parent = lootController.lootPool.transform;
-                //Debug.Log("dropped loot! "+c.type);
-            } else {
-                //Debug.Log("didn't drop loot :(");
-            }
-        }
-        """
+        self.dead = True
+        lc = LootController.getInstance()
+        loot: [LootController.Currency] = lc.roll()
+        mc = MapController.getInstance()
+        mc.addLoot(loot, self.pos)
 
     def doDamage(self) -> int:
         if self.hitCooldown <= 0:

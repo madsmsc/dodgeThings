@@ -1,4 +1,3 @@
-from src.Vector import Vector
 from src.Enemy import Enemy
 from src.Player import Player
 from src.Util import Const

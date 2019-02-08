@@ -1,93 +1,101 @@
+from random import Random
+from src.Vector import Vector
+
+class Loot:
+    pos: Vector = Vector((0, 0))
+    amount: int = 1
+    stackSize: int = 0
+    name: str = ''
+    desc: str = ''
+    dropChance: float = 0  # [0, 100]
+
+class Item(Loot):
+    scrappable: bool = True
+
+class Currency(Loot):
+    def __init__(self, name: str, desc: str, dropChance: int):
+        self.stackSize: int = 20
+        self.name = name
+        self.desc = desc
+        self.dropChance = dropChance
+
+class Identify(Currency):
+    def __init__(self):
+        super().__init__('Scroll of identify', 'Reveals the properties of an item', 20)
+
+class Portal(Currency):
+    def __init__(self):
+        super().__init__('Portal scroll', 'Opens transportation device to your currenct base', 15)
+
+class MakeGreen(Currency):
+    def __init__(self):
+        super().__init__('Scroll of elders', 'Convert any item to uncommen rarity', 10)
+
+class RandomRarity(Currency):
+    def __init__(self):
+        super().__init__('Tome of luck', 'Convert any item to a random rarity', 6)
+
+class MakeBlue(Currency):
+    def __init__(self):
+        super().__init__('Hidden tome', 'Convert any item to rare rarity', 6)
+
+class RerollBlue(Currency):
+    def __init__(self):
+        super().__init__('Forgotten scroll', 'Roll new modifiers for an rare item', 4)
+
+class MakeYellow(Currency):
+    def __init__(self):
+        super().__init__('Ancient scroll', 'Convert any item to ancient rarity', 2)
+
+class RerollYellow(Currency):
+    def __init__(self):
+        super().__init__('Ancient tome', 'Roll new modifiers for an ancient item', 1)
 
 class LootController:
-    invSize: int, int = (10, 5)
-    inventory: [Loot][Loot] = [invSize[0]][invSize[1]]
-    
-    class Loot:
-        amount: int = 1
-        stackSize: int = 0
-        name: str = ''
-        desc: str = ''
-        dropChance: float = 0 # [0, 100]
+    __instance = None
 
-    class Item(Loot):
-        scrappable: bool = True
+    @staticmethod
+    def getInstance():
+        if LootController.__instance is None:
+            LootController.__instance = LootController()
+        return LootController.__instance
 
-    class Currency(Loot):
-        stackSize: int = 20
-
-    class Identify(Currency):
-        name = 'Scroll of identify'
-        desc = 'Reveals the properties of an item'
-        dropChance = 20
-
-    class Portal(Currency):
-        name = 'Portal scroll'
-        desc = 'Opens transportation device to your currenct base'
-        dropChance = 15
-
-    class MakeGreen(Currency):
-        name = 'Scroll of elders'
-        desc = 'Convert any item to uncommen rarity'
-        dropChance = 10
-
-    class RandomRarity(Currency):
-        name = 'Tome of luck'
-        desc = 'Convert any item to a random rarity'
-        dropChance = 6
-
-    class MakeBlue(Currency):
-        name = 'Hidden tome'
-        desc = 'Convert any item to rare rarity'
-        dropChance = 6
-
-    class RerollBlue(Currency):
-        name = 'Forgotten scroll'
-        desc = 'Roll new modifiers for an rare item'
-        dropChance = 4
-
-    class MakeYellow(Currency):
-        name = 'Ancient tome'
-        desc = 'Convert any item to ancient rarity'
-        dropChance = 2
-
-    class RerollYellow(Currency):
-        name = 'Roll new modifiers for an ancient item'
-        dropChance = 1
+    inventory: [[Loot]] = [[None for x in range(10)] for y in range(5)]
 
     currencies = [Identify, Portal, MakeGreen, RandomRarity,
                   MakeBlue, RerollBlue, MakeYellow, RerollYellow]
+
+    levelMultMap = {
+     -5: 0.1,
+     -4: 0.2,
+     -3: 0.4,
+     -2: 0.6,
+     -1: 0.8,
+     0: 1.0,
+     1: 1.2,
+     2: 1.5,
+     3: 1.8,
+     4: 2.0,
+     5: 3.0}
 
     def levelMult(self, level: int) -> int:
         if level < -5:
             return 0
         if level > 5:
             return 5
-        return {
-            -5: 0.1
-            -4: 0.2
-            -3: 0.4
-            -2: 0.6
-            -1: 0.8
-            0: 1.0
-            1: 1.2
-            2: 1.5
-            3: 1.8
-            4: 2.0
-            5: 3.0
-        }.get(level, 0)
+        return self.levelMultMap.get(level, 0)
 
-    def roll(level: int) -> Currency:
+    def roll(self, level: int) -> [Currency]:
         drops = []
-        float rolls = Random.Range(0, 100) * levelMult(level)
+        r = Random()
+        rolls = r.randint(0, 100) * self.levelMult(level)
         for i in range(0, int(rolls / 100)):
-            float random = Random.Range(0, 100);
-            for currency in currencies:
-                if random >= 100 - currency.dropChance:
+            roll = r.randint(0, 100)
+            for currency in self.currencies:
+                if roll >= 100 - currency.dropChance:
                     print('dropping currency')
-                    drops.append(
+                    drops.append(currency())
         return drops
-
                         
 """
 make a poolController that can instantiate all objects for me

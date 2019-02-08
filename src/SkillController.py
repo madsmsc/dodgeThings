@@ -5,9 +5,17 @@ maxPower, curPower
 """
 
 class SkillController:
+    __instance = None
+
+    @staticmethod
+    def getInstance():
+        if SkillController.__instance is None:
+            SkillController.__instance = SkillController()
+        return SkillController.__instance
+
     USING_SKILL: str = "Using ";
     NO_POWER: str = "Not enough power to use ";
-    equipped: [skill] = [None, None, None, None, None]
+    equipped: [Skill] = [None, None, None, None, None]
     gui: GUI = None
     player: Player = None
 
