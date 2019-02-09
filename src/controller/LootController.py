@@ -1,6 +1,7 @@
 from random import Random
 from src.model.Vector import Vector
 from enum import Enum
+from src.controller.Singleton import Singleton
 
 class Rarity(Enum):
     COMMON = 1
@@ -58,15 +59,7 @@ class RerollYellow(Currency):
     def __init__(self):
         super().__init__('Ancient tome', 'Roll new modifiers for an ancient item', 1)
 
-class LootController:
-    __instance = None
-
-    @staticmethod
-    def getInstance():
-        if LootController.__instance is None:
-            LootController.__instance = LootController()
-        return LootController.__instance
-
+class LootController(Singleton):
     inventory: [[Loot]] = [[None for x in range(10)] for y in range(5)]
 
     currencies = [Identify, Portal, MakeGreen, RandomRarity,

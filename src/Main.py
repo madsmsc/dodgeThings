@@ -7,9 +7,9 @@ from src.controller.MapController import MapController
 from src.model.Vector import Vector
 
 class Main:
-    gc = GuiController.getInstance()
-    mc = MapController.getInstance()
-    sc = SkillController.getInstance()
+    gc: GuiController = GuiController.getInstance()
+    mc: MapController = MapController.getInstance()
+    sc: SkillController = SkillController.getInstance()
     state = State()
     screen = None
     clock = None
@@ -25,14 +25,13 @@ class Main:
             # fix skills paa keys press
             # pygame.KEYDOWN and event.button == 'q'
             # threading.
-            myThread = threading.Thread(None, self.myFace)
-            myThread.start()
-
+            #myThread = threading.Thread(None, self.myFace)
+            #myThread.start()
         return False
 
-    def myFace(self):
-        cond = threading.Condition()
-        cond.wait(timeout=100)
+    #def myFace(self):
+    #    cond = threading.Condition()
+    #    cond.wait(timeout=100)
 
     def draw(self):
         self.screen.fill(Color.BLACK)
@@ -48,7 +47,8 @@ class Main:
         for x in range(self.mc.blocks):
             for y in range(self.mc.blocks):
                 self.screen.fill(self.mc.map[x][y],
-                                 pygame.Rect((x * self.mc.blocksize, y * self.mc.blocksize),
+                                 pygame.Rect((x * self.mc.blocksize,
+                                              y * self.mc.blocksize),
                                  (self.mc.blocksize, self.mc.blocksize)))
 
     def gameLoop(self):

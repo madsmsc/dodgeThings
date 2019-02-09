@@ -1,16 +1,9 @@
 import pygame
 from src.Util import Color, Const
 from src.model.State import State
+from src.controller.Singleton import Singleton
 
-class GuiController:
-    __instance = None
-
-    @staticmethod
-    def getInstance():
-        if GuiController.__instance is None:
-            GuiController.__instance = GuiController()
-        return GuiController.__instance
-
+class GuiController(Singleton):
     state: State = None
     screen: pygame.Surface = None
     font = None

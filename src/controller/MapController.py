@@ -1,19 +1,13 @@
 from src.controller.LootController import Loot
 from src.model.Char import Node
 from src.Util import Const
+from src.controller.Singleton import Singleton
 import random
 
-class MapController:
-    __instance = None
 
+class MapController(Singleton):
     loot: [Loot] = []
     enemies: [Node] = []
-
-    @staticmethod
-    def getInstance():
-        if MapController.__instance is None:
-            MapController.__instance = MapController()
-        return MapController.__instance
 
     def addLoot(self, loot: [Loot]):
         self.loot.append(loot)

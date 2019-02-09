@@ -1,4 +1,5 @@
 ﻿from src.controller.GuiController import GuiController
+from src.controller.Singleton import Singleton
 from src.model.Player import Player
 
 class Skill:
@@ -28,15 +29,8 @@ class OverDrive(Skill):
         self.powerCost = 4
         self.damage = 0
 
-class SkillController:
-    __instance = None
 
-    @staticmethod
-    def getInstance():
-        if SkillController.__instance is None:
-            SkillController.__instance = SkillController()
-        return SkillController.__instance
-
+class SkillController(Singleton):
     NO_POWER: str = 'Not enough power to use '
     equipped: [Skill] = [PowerNova(), None, None, None, None]
     gc: GuiController = GuiController.getInstance()
