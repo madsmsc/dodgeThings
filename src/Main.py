@@ -24,14 +24,7 @@ class Main:
                 self.sc.useSkill(0)
             # fix skills paa keys press
             # pygame.KEYDOWN and event.button == 'q'
-            # threading.
-            #myThread = threading.Thread(None, self.myFace)
-            #myThread.start()
         return False
-
-    #def myFace(self):
-    #    cond = threading.Condition()
-    #    cond.wait(timeout=100)
 
     def draw(self):
         self.screen.fill(Color.BLACK)

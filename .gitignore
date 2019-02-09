@@ -1,4 +1,6 @@
 venv/
 .idea/
-src/__pycache__/
+.git/
+**/__pycache__/
 **/.DS_Store
+**/*~
