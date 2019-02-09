@@ -1,8 +1,8 @@
 ﻿from enum import Enum
-from src.Char import Char
-from src.Player import Player
-from src.LootController import LootController, Currency, Rarity
-from src.MapController import MapController
+from src.model.Char import Char
+from src.model.Player import Player
+from src.controller.LootController import LootController, Currency, Rarity
+from src.controller.MapController import MapController
 
 class Enemy(Char):
     class MobType(Enum):

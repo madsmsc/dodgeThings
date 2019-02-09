@@ -1,5 +1,5 @@
-from src.Char import Char
-from src.Vector import Vector
+from src.model.Char import Char
+from src.model.Vector import Vector
 
 class Player(Char):
     moveTo: Vector = None
@@ -23,6 +23,8 @@ class Player(Char):
         self.powerGain()
 
     def powerGain(self):
+        if self.curPower >= self.maxPower:
+            return
         if self.powerGainTime < self.maxPowerGainTime:
             self.powerGainTime += 1
         else:

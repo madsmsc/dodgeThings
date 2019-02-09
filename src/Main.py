@@ -1,10 +1,10 @@
-import pygame
-from src.State import State
+import pygame, threading
+from src.model.State import State
 from src.Util import Color, Const
-from src.SkillController import SkillController
-from src.GuiController import GuiController
-from src.MapController import MapController
-from src.Vector import Vector
+from src.controller.SkillController import SkillController
+from src.controller.GuiController import GuiController
+from src.controller.MapController import MapController
+from src.model.Vector import Vector
 
 class Main:
     gc = GuiController.getInstance()
@@ -22,7 +22,17 @@ class Main:
                 self.state.player.moveTo = Vector(pygame.mouse.get_pos())
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
                 self.sc.useSkill(0)
+            # fix skills paa keys press
+            # pygame.KEYDOWN and event.button == 'q'
+            # threading.
+            myThread = threading.Thread(None, self.myFace)
+            myThread.start()
+
         return False
+
+    def myFace(self):
+        cond = threading.Condition()
+        cond.wait(timeout=100)
 
     def draw(self):
         self.screen.fill(Color.BLACK)
@@ -48,7 +58,7 @@ class Main:
         if self.state.player.curHealth <= 0:
             print('you lose!')
             return False
-        self. state.update(1.0 / Const.CLOCK_TICK)
+        self.state.update(1.0 / Const.CLOCK_TICK)
         self.draw()
         return True
 

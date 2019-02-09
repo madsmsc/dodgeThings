@@ -1,4 +1,4 @@
-from src.Vector import Vector
+from src.model.Vector import Vector
 
 class Node:
     pos: Vector = None

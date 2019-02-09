@@ -1,5 +1,5 @@
-from src.Enemy import Enemy
-from src.Player import Player
+from src.model.Enemy import Enemy
+from src.model.Player import Player
 from src.Util import Const
 
 class State:

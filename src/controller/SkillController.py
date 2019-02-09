@@ -1,5 +1,5 @@
-﻿from src.GuiController import GuiController
-from src.Player import Player
+﻿from src.controller.GuiController import GuiController
+from src.model.Player import Player
 
 class Skill:
     name: str = ''

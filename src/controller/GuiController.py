@@ -1,6 +1,6 @@
 import pygame
 from src.Util import Color, Const
-from src.State import State
+from src.model.State import State
 
 class GuiController:
     __instance = None

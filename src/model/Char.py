@@ -1,6 +1,6 @@
-from src.Vector import Vector
+from src.model.Vector import Vector
 from src.Util import Const
-from src.Node import Node
+from src.model.Node import Node
 
 class Char(Node):
     moveSpeed: float = 0

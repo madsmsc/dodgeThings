@@ -1,5 +1,5 @@
 from random import Random
-from src.Vector import Vector
+from src.model.Vector import Vector
 from enum import Enum
 
 class Rarity(Enum):

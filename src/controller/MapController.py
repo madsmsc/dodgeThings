@@ -1,5 +1,5 @@
-from src.LootController import Loot
-from src.Char import Node
+from src.controller.LootController import Loot
+from src.model.Char import Node
 from src.Util import Const
 import random
 
