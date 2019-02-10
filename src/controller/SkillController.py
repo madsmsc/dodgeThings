@@ -1,6 +1,5 @@
 ﻿from src.controller.GuiController import GuiController
-from src.controller.Singleton import Singleton
-from src.model.Player import Player
+from src.controller.StateController import StateController
 
 class Skill:
     name: str = ''
@@ -30,22 +29,27 @@ class OverDrive(Skill):
         self.damage = 0
 
 
-class SkillController(Singleton):
+class SkillController:
+    __instance = None
+
+    @staticmethod
+    def getInstance():
+        if SkillController.__instance is None:
+            SkillController.__instance = SkillController()
+        return SkillController.__instance
+
     NO_POWER: str = 'Not enough power to use '
     equipped: [Skill] = [PowerNova(), None, None, None, None]
     gc: GuiController = GuiController.getInstance()
-    player: Player = None
-
-    def setup(self, player):
-        self.player = player
+    state: StateController = StateController.getInstance()
 
     def useSkill(self, slot):
         if slot < 0 or slot > 4:
             print('slot outside skill range')
             return
         skill = self.equipped[slot]
-        if self.player.curPower < skill.powerCost:
+        if self.state.player.curPower < skill.powerCost:
             self.gc.notify(self.NO_POWER + skill.name)
         else:
-            self.player.curPower -= skill.powerCost
+            self.state.player.curPower -= skill.powerCost
             self.gc.nova(self.equipped[0].damage)

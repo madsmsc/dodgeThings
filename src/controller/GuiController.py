@@ -1,10 +1,19 @@
 import pygame
 from src.Util import Color, Const
-from src.model.State import State
-from src.controller.Singleton import Singleton
+from src.controller.StateController import StateController
+from src.controller.MapController import MapController
 
-class GuiController(Singleton):
-    state: State = None
+class GuiController:
+    __instance = None
+
+    @staticmethod
+    def getInstance():
+        if GuiController.__instance is None:
+            GuiController.__instance = GuiController()
+        return GuiController.__instance
+
+    map: MapController = MapController.getInstance()
+    state: StateController = StateController.getInstance()
     screen: pygame.Surface = None
     font = None
     maxLabelTime = 300
@@ -17,8 +26,7 @@ class GuiController(Singleton):
     iconBully, iconEvil, iconZombie, iconPlayer = None, None, None, None
     iconHealth, iconPower = None, None
 
-    def setup(self, state, screen):
-        self.state = state
+    def setup(self, screen):
         self.screen = screen
         self.font = pygame.font.SysFont("Comic Sans MS", 34)
         self.iconBully = self.loadIcon(Const.ICON_BULLY)
@@ -27,6 +35,14 @@ class GuiController(Singleton):
         self.iconPlayer = self.loadIcon(Const.ICON_PLAYER)
         self.iconHealth = self.loadIcon(Const.ICON_HEALTH)
         self.iconPower = self.loadIcon(Const.ICON_POWER)
+
+    def blockolize(self):
+        for x in range(self.map.blocks):
+            for y in range(self.map.blocks):
+                self.screen.fill(self.map.map[x][y],
+                                 pygame.Rect((x * self.map.blocksize,
+                                              y * self.map.blocksize),
+                                             (self.map.blocksize, self.map.blocksize)))
 
     def render(self):
         self.renderBottomPabel()

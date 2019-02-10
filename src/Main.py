@@ -1,68 +1,54 @@
-import pygame, threading
-from src.model.State import State
+import pygame
 from src.Util import Color, Const
+from src.controller.StateController import StateController
 from src.controller.SkillController import SkillController
 from src.controller.GuiController import GuiController
 from src.controller.MapController import MapController
-from src.model.Vector import Vector
+from src.controller.MenuController import MenuController
+from src.controller.EventController import EventController
 
 class Main:
-    gc: GuiController = GuiController.getInstance()
-    mc: MapController = MapController.getInstance()
-    sc: SkillController = SkillController.getInstance()
-    state = State()
+    gui: GuiController = GuiController.getInstance()
+    map: MapController = MapController.getInstance()
+    skill: SkillController = SkillController.getInstance()
+    menu: MenuController = MenuController.getInstance()
+    event: EventController = EventController.getInstance()
+    state: StateController = StateController.getInstance()
     screen = None
     clock = None
 
-    def stopEvent(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return True
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                self.state.player.moveTo = Vector(pygame.mouse.get_pos())
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
-                self.sc.useSkill(0)
-            # fix skills paa keys press
-            # pygame.KEYDOWN and event.button == 'q'
-        return False
-
-    def draw(self):
+    def render(self):
         self.screen.fill(Color.BLACK)
-        self.blockolize()
+        self.gui.blockolize()
         facePos = (self.state.player.pos.x - 25, self.state.player.pos.y - 23)
-        self.screen.blit(self.gc.iconPlayer, facePos)
+        self.screen.blit(self.gui.iconPlayer, facePos)
         for enemy in self.state.enemies:
-            self.screen.blit(self.gc.iconBully, enemy.int())
-        self.gc.render()
+            self.screen.blit(self.gui.iconBully, enemy.int())
+        self.gui.render()
+        self.menu.render()
         pygame.display.flip()
-
-    def blockolize(self):
-        for x in range(self.mc.blocks):
-            for y in range(self.mc.blocks):
-                self.screen.fill(self.mc.map[x][y],
-                                 pygame.Rect((x * self.mc.blocksize,
-                                              y * self.mc.blocksize),
-                                 (self.mc.blocksize, self.mc.blocksize)))
 
     def gameLoop(self):
         self.clock.tick(Const.CLOCK_TICK)
-        if self.stopEvent():
+        if self.event.stopEvent():
             return False
         if self.state.player.curHealth <= 0:
             print('you lose!')
             return False
-        self.state.update(1.0 / Const.CLOCK_TICK)
-        self.draw()
+        if not self.menu.isShowMenu():
+            self.state.update(1.0 / Const.CLOCK_TICK)
+        self.render()
         return True
 
     def start(self):
         pygame.init()
         self.screen = pygame.display.set_mode(Const.WINDOW)
-        self.gc.setup(self.state, self.screen)
+        self.state.setup()
+        self.gui.setup(self.screen)
+        self.menu.setup(self.screen)
         pygame.display.set_caption(Const.TITLE)
         self.clock = pygame.time.Clock()
-        self.mc.makeMap()
-        self.sc.setup(self.state.player)
+        self.map.makeMap()
         while 1:
             if not self.gameLoop():
                 break

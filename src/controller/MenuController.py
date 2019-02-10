@@ -1,39 +1,51 @@
 import pygame
+from src.controller.StateController import StateController
 from src.Util import Const, Color
 from enum import Enum
-from src.controller.Singleton import Singleton
 
 class Menu(Enum):
     NO = 0,
     MAIN = 1,
     SETTINGS = 2
 
-class Button():
-    upperLeft: (int, int) = (0, 0)
-    lowerRight: (int, int) = (0, 0)
+class Button:
+    pos: (int, int) = (0, 0)
+    dim: (int, int) = (0, 0)
     action = None
 
-    def __init__(self, upperLeft: (int, int), lowerRight: (int, int), action):
-        self.upperLeft = upperLeft
-        self.lowerRight = lowerRight
+    def __init__(self, pos: (int, int), dim: (int, int), action):
+        self.pos = pos
+        self.dim = dim
         self.action = action
 
     def isInside(self, pos: (int, int)):
-        return pos[0] > self.upperLeft[0] and \
-               pos[0] < self.lowerRight[0] and \
-               pos[1] < self.upperLeft[1] and \
-               pos[1] > self.lowerRight[1]
+        # print('is ('+str(pos[0])+','+str(pos[1])+') inside pos ('+
+        #      str(self.pos[0])+','+str(self.pos[0])+') and width ('+
+        #      str(self.dim[0])+','+str(self.dim[0])+')')
+        insideX = self.pos[0] < pos[0] < self.pos[0]+self.dim[0]
+        insideY = self.pos[1] < pos[1] < self.pos[1]+self.dim[1]
+        # print('insideX='+str(insideX)+', insideY='+str(insideY))
+        return insideX and insideY
 
     def click(self):
         self.action()
 
-class MenuController(Singleton):
+class MenuController:
+    __instance = None
+
+    @staticmethod
+    def getInstance():
+        if MenuController.__instance is None:
+            MenuController.__instance = MenuController()
+        return MenuController.__instance
+
     mainMenuButtons: [Button] = []
     settingsMenuButtons: [Button] = []
     menu: Menu = Menu.NO
+    screen = None
+    state: StateController = StateController.getInstance()
 
-    def __init__(self, state, screen):
-        self.state = state
+    def setup(self, screen):
         self.screen = screen
 
     def isShowMenu(self) -> bool:
@@ -62,11 +74,13 @@ class MenuController(Singleton):
         elif self.menu == Menu.SETTINGS:
             self.clickSettingsMenu(pos)
         
-    def draw(self):
+    def render(self):
+        if not self.isShowMenu():
+            return
         self.showFilter()
-        if self.menu == Menu.Main:
+        if self.menu == Menu.MAIN:
             self.drawMainMenu()
-        if self.menu == Menu.Settings:
+        if self.menu == Menu.SETTINGS:
             self.drawSettingsMenu()
 
     def clickMainMenu(self, pos: (int, int)):
@@ -81,39 +95,34 @@ class MenuController(Singleton):
 
     def drawMainMenu(self):
         # panel
-        width, height = 100, 400
-        s = pygame.Surface(width, height)
+        width: int = 200
+        height: int = 400
+        s = pygame.Surface((width, height))
         s.set_alpha(200)
         s.fill((0, 0, 0))
         pos = (Const.WINDOW[0] / 2 - width / 2,
                Const.WINDOW[1] / 2 - height / 2)
-        self.screen.blit(s, ())
+        self.screen.blit(s, pos)
         # label
         headerFont = pygame.font.SysFont("Comic Sans MS", 28)
         header = headerFont.render('Main Menu', 1, Color.GREEN)
-        self.screen.blit(header, (pos[0], pos[1]+50))
+        self.screen.blit(header, (pos[0]+30, pos[1]+50))
         itemFont = pygame.font.SysFont("Comic Sans MS", 28)
         item1 = itemFont.render('item 1', 1, Color.GREEN)
         item2 = itemFont.render('item 2', 1, Color.GREEN)
         item3 = itemFont.render('item 3', 1, Color.GREEN)
-        pos1 = (pos[0], pos[1]+50)
-        self.mainMenuButtons.append(Button(pos1,
-                (pos1[0]+90, pos1[1]+30), self.button1))
-        self.screen.blit(item1, pos1)
-        pos2 = (pos[0], pos[1]+100)
-        self.mainMenuButtons.append(Button(pos2,
-                (pos2[0] + 90, pos2[1] + 30), self.button2))
-        self.screen.blit(item2, pos2)
-        pos3 = (pos[0], pos[1]+100)
-        self.mainMenuButtons.append(Button(pos3,
-                (pos3[0] + 90, pos3[1] + 30), self.button3))
-        self.screen.blit(item3, pos3)
 
-    def button1(self): print('button1')
+        self.mainMenuButtons.append(Button((pos[0]+60, pos[1]+100), (90, 30),
+                                            lambda: print('button1')))
+        self.screen.blit(item1, (pos[0]+60, pos[1]+100))
 
-    def button2(self): print('button2')
+        self.mainMenuButtons.append(Button((pos[0]+60, pos[1]+150), (90, 30),
+                                           lambda: print('button2')))
+        self.screen.blit(item2, (pos[0]+60, pos[1]+150))
 
-    def button3(self): print('button3')
+        self.mainMenuButtons.append(Button((pos[0]+60, pos[1]+200), (90, 30),
+                                           lambda: print('button3')))
+        self.screen.blit(item3, (pos[0]+60, pos[1]+200))
 
     def drawSettingsMenu(self):
         print('settings menu not yet implemented')

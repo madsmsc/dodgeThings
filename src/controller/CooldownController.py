@@ -1,5 +1,11 @@
 class CooldownController:
-    face = 1
+    __instance = None
+
+    @staticmethod
+    def getInstance():
+        if CooldownController.__instance is None:
+            CooldownController.__instance = CooldownController()
+        return CooldownController.__instance
 
 # threading.
 # myThread = threading.Thread(None, self.myFace)

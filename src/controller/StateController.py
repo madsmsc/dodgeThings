@@ -2,12 +2,20 @@ from src.model.Enemy import Enemy
 from src.model.Player import Player
 from src.Util import Const
 
-class State:
+class StateController:
+    __instance = None
+
+    @staticmethod
+    def getInstance():
+        if StateController.__instance is None:
+            StateController.__instance = StateController()
+        return StateController.__instance
+
     player: Player = None
     enemies = []
     deadEnemies = []
 
-    def __init__(self):
+    def setup(self):
         self.player = Player((500, 300))
         self.enemies.append(Enemy(Enemy.MobType.SLOW, (100, 250)))
         self.enemies.append(Enemy(Enemy.MobType.SLOW, (60, 220)))
