@@ -30,3 +30,7 @@ class Player(Char):
         else:
             self.powerGainTime = 0
             self.curPower += 1
+
+    def renderPos(self) -> (int, int):
+        return (self.pos.x - 25,
+                self.pos.y - 40)

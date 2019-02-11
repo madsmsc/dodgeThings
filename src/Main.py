@@ -17,11 +17,10 @@ class Main:
     screen = None
     clock = None
 
-    def render(self):
+    def draw(self):
         self.screen.fill(Color.BLACK)
-        self.gui.blockolize()
-        facePos = (self.state.player.pos.x - 25, self.state.player.pos.y - 23)
-        self.screen.blit(self.gui.iconPlayer, facePos)
+        self.gui.drawMap()
+        self.screen.blit(self.gui.iconPlayer, self.state.player.renderPos())
         for enemy in self.state.enemies:
             self.screen.blit(self.gui.iconBully, enemy.int())
         self.gui.render()
@@ -37,7 +36,7 @@ class Main:
             return False
         if not self.menu.isShowMenu():
             self.state.update(1.0 / Const.CLOCK_TICK)
-        self.render()
+        self.draw()
         return True
 
     def start(self):

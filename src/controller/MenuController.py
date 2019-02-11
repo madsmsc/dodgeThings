@@ -105,12 +105,12 @@ class MenuController:
         self.screen.blit(s, pos)
         # label
         headerFont = pygame.font.SysFont("Comic Sans MS", 28)
-        header = headerFont.render('Main Menu', 1, Color.GREEN)
+        header = headerFont.render('Game Paused', 1, Color.GREEN)
         self.screen.blit(header, (pos[0]+30, pos[1]+50))
         itemFont = pygame.font.SysFont("Comic Sans MS", 28)
-        item1 = itemFont.render('item 1', 1, Color.GREEN)
-        item2 = itemFont.render('item 2', 1, Color.GREEN)
-        item3 = itemFont.render('item 3', 1, Color.GREEN)
+        item1 = itemFont.render('[ESC] to resume', 1, Color.GREEN)
+        item2 = itemFont.render('Settings', 1, Color.GREEN)
+        item3 = itemFont.render('Exit', 1, Color.GREEN)
 
         self.mainMenuButtons.append(Button((pos[0]+60, pos[1]+100), (90, 30),
                                             lambda: print('button1')))

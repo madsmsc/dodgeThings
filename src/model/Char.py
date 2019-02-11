@@ -20,14 +20,15 @@ class Char(Node):
         return int(self.pos.x), int(self.pos.y)
 
     def move(self, v: Vector):
-        if self.pos.distance_to(v) < Const.WIN_DIST:
-            return
-        xLen = v.x - self.pos.x
-        yLen = v.y - self.pos.y
-        normalPos = (xLen, yLen)
-        normal = Vector(normalPos)
-        normal = normal.normalize()
-        normal.x *= self.moveSpeed
-        normal.y *= self.moveSpeed
-        self.pos.x += normal.x
-        self.pos.y += normal.y
+        if self.pos.distance_to(v) < Const.WIN_DIST/5:
+            self.pos = v
+        else:
+            xLen = v.x - self.pos.x
+            yLen = v.y - self.pos.y
+            normalPos = (xLen, yLen)
+            normal = Vector(normalPos)
+            normal = normal.normalize()
+            normal.x *= self.moveSpeed
+            normal.y *= self.moveSpeed
+            self.pos.x += normal.x
+            self.pos.y += normal.y

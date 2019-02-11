@@ -1,6 +1,5 @@
 from src.controller.LootController import Loot
 from src.model.Char import Node
-from src.Util import Const
 import random
 
 
@@ -25,18 +24,13 @@ class MapController:
     blocksize = 0
     blocks = 0
 
-    colors = list({
-        'green': (100, 170, 100),
-        'blue': (100, 100, 170),
-        'red': (170, 100, 100)
-    }.values())
+    colors = [10, 11, 12, 13, 14, 15, 16, 17, 18]
     map = [[]]
 
     def makeMap(self):
-        self.blocksize = 30
-        winSize = Const.WINDOW[0]
-        self.blocks = int(winSize / 30) + 1
-        for x in range(self.blocks):
+        xSize = 12
+        ySize = 48
+        for x in range(0, xSize):
             self.map.append([])
-            for y in range(self.blocks):
+            for y in range(0, ySize):
                 self.map[x].append(random.choice(self.colors))

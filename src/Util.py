@@ -17,3 +17,4 @@ class Const:
     ICON_ZOMBIE = RES + 'shambling-zombie.png'
     ICON_HEALTH = RES + 'health-normal.png'
     ICON_POWER = RES + 'power-lightning.png'
+    ICON_ENVIRONMENT = RES + 'environment.png'
