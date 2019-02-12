@@ -11,15 +11,15 @@ class Map:
     # how dense the initial grid is with living cells [0, 100]
     chanceToStartAlive: float = 45
     # the lower neighbour limit at which cells start dying
-    starvationLimit: int = 1
+    starvationLimit: int = 2
     # the upper neighbour limit at which cells start dying
-    deathLimit: int = 3
+    deathLimit: int = 4
     # the number of neighbours that cause a dead cell to become alive
     birthLimit: int = 4
     # the number of times we perform the simulation step
-    stepLimit: int = 1
+    stepLimit: int = 6
     # number of hidden treasures
-    treasureHiddenLimit: int = 7
+    treasureHiddenLimit: int = 5
  
     def initialiseMap(self, map: [[bool]]) -> [[bool]]:
         r = Random()
@@ -30,8 +30,8 @@ class Map:
         return map
 
     def createBlankMap(self) -> [[bool]]:
-        return [[False for i in range(self.width)]
-                for j in range(self.height)]
+        return [[False for i in range(self.height)]
+                for j in range(self.width)]
 
     def doSimulationStep(self, oldMap: [[bool]]) -> [[bool]]:
         newMap: [[bool]] = self.createBlankMap()
@@ -89,9 +89,9 @@ class Map:
                 if self.isTreasure((j, i)):
                     s += 'X'
                 elif self.cellmap[j][i]:
-                    s += '.'
-                else:
                     s += ' '
+                else:
+                    s += '.'
             s += '\n'
         print(s)
 
@@ -102,7 +102,7 @@ class Map:
         return False
 
 if __name__ == '__main__':
-    tiles = Map()
-    tiles.generateMap()
-    tiles.placeTreasure()
-    tiles.printMap()
+    map = Map()
+    map.generateMap(12 * 4, 48 * 2)
+    map.placeTreasure()
+    map.printMap()

@@ -1,7 +1,6 @@
 import pygame
 from src.Util import Color, Const
 from src.controller.StateController import StateController
-from src.controller.MapController import MapController
 
 class GuiController:
     __instance = None
@@ -12,7 +11,6 @@ class GuiController:
             GuiController.__instance = GuiController()
         return GuiController.__instance
 
-    map: MapController = MapController.getInstance()
     state: StateController = StateController.getInstance()
     screen: pygame.Surface = None
     font = None
@@ -41,12 +39,12 @@ class GuiController:
         self.subsurfaceEnvironment()
 
     def drawMap(self):
-        size = (len(self.map.map)-1, len(self.map.map[0])-1)
+        size = (len(self.state.map)-1, len(self.state.map[0])-1)
         xOffset = 32
         for y in range(0, size[1]):
             for x in range(0, size[0]):
                 pos = (x * 64 + xOffset, y * 16)
-                tile = self.map.map[x][y]
+                tile = self.state.map[x][y]
                 self.screen.blit(self.frames[tile], pos)
             xOffset += 32
             xOffset %= 64

@@ -3,13 +3,11 @@ from src.Util import Color, Const
 from src.controller.StateController import StateController
 from src.controller.SkillController import SkillController
 from src.controller.GuiController import GuiController
-from src.controller.MapController import MapController
 from src.controller.MenuController import MenuController
 from src.controller.EventController import EventController
 
 class Main:
     gui: GuiController = GuiController.getInstance()
-    map: MapController = MapController.getInstance()
     skill: SkillController = SkillController.getInstance()
     menu: MenuController = MenuController.getInstance()
     event: EventController = EventController.getInstance()
@@ -47,7 +45,7 @@ class Main:
         self.menu.setup(self.screen)
         pygame.display.set_caption(Const.TITLE)
         self.clock = pygame.time.Clock()
-        self.map.makeMap()
+        self.state.makeMap()
         while 1:
             if not self.gameLoop():
                 break

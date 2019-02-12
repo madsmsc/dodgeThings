@@ -1,12 +1,5 @@
 from random import Random
 from src.model.Vector import Vector
-from enum import Enum
-
-class Rarity(Enum):
-    COMMON = 1
-    UNCOMMON = 2
-    RARE = 3
-    ANCIENT = 4
 
 class Loot:
     pos: Vector = Vector((0, 0))

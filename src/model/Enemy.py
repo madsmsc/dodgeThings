@@ -1,8 +1,7 @@
 ﻿from enum import Enum
 from src.model.Char import Char
 from src.model.Player import Player
-from src.controller.LootController import LootController, Currency, Rarity
-from src.controller.MapController import MapController
+from src.model.Rarity import Rarity
 
 class Enemy(Char):
     class MobType(Enum):
@@ -47,17 +46,10 @@ class Enemy(Char):
 
     def update(self, player: Player, tick: float):
         if self.curHealth <= 0:
-            self.die()
+            self.dead = True
         if self.hitCooldown > 0:
             self.hitCooldown -= tick
         self.move(player.pos)
-
-    def die(self):
-        self.dead = True
-        lc = LootController.getInstance()
-        loot: [Currency] = lc.roll(self.level)
-        mc = MapController.getInstance()
-        mc.addLoot(loot)
 
     def doDamage(self) -> int:
         if self.hitCooldown <= 0:
