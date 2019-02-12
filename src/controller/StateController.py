@@ -1,5 +1,6 @@
 from src.model.Enemy import Enemy
 from src.model.Player import Player
+from src.model.Map import Map
 from src.Util import Const
 
 class StateController:
@@ -39,3 +40,24 @@ class StateController:
             dist = self.player.pos.distance_to(enemy.pos)
             if dist < radius:
                 enemy.takeDamage(amount)
+
+    #colors = [10, 11, 12, 13, 14, 15, 16, 17, 18]
+    map = [[]]
+    EMPTY = 42
+    PLAIN = 20
+
+    def makeMap(self):
+        xSize = 12
+        ySize = 48
+        tiles = Map()
+        tiles.generateMap(xSize, ySize)
+        tiles.placeTreasure()
+        #tiles.printMap()
+
+        for x in range(0, xSize):
+            self.map.append([])
+            for y in range(0, ySize):
+                if tiles.cellmap[x][y]:
+                    self.map[x].append(self.PLAIN)
+                else:
+                    self.map[x].append(self.EMPTY)

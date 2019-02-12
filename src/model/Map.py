@@ -1,9 +1,11 @@
 from random import Random
 
-class MapGenerator:
+class Map:
     # the size of the map
-    width: int = 20
-    height: int = 20
+    width: int = 0
+    height: int = 0
+    # list of tuples containing treasure positions
+    treasures: [(int, int)] = []
     # the map indicating if cells are alive
     cellmap: [[bool]] = [[]]
     # how dense the initial grid is with living cells [0, 100]
@@ -13,11 +15,11 @@ class MapGenerator:
     # the upper neighbour limit at which cells start dying
     deathLimit: int = 3
     # the number of neighbours that cause a dead cell to become alive
-    birthLimit: int = 2
+    birthLimit: int = 4
     # the number of times we perform the simulation step
-    stepLimit: int = 5
+    stepLimit: int = 1
     # number of hidden treasures
-    treasureHiddenLimit: int = 5
+    treasureHiddenLimit: int = 7
  
     def initialiseMap(self, map: [[bool]]) -> [[bool]]:
         r = Random()
@@ -27,12 +29,12 @@ class MapGenerator:
                     map[x][y] = True
         return map
 
-    def initMap(self) -> [[bool]]:
+    def createBlankMap(self) -> [[bool]]:
         return [[False for i in range(self.width)]
-                       for j in range(self.height)]
+                for j in range(self.height)]
 
     def doSimulationStep(self, oldMap: [[bool]]) -> [[bool]]:
-        newMap: [[bool]] = self.initMap()
+        newMap: [[bool]] = self.createBlankMap()
         for x in range(0, len(oldMap)):
             for y in range(0, len(oldMap[0])):
                 nbs: int = self.countAliveNeighbours(oldMap, x, y)
@@ -57,26 +59,50 @@ class MapGenerator:
                 if i == 0 and j == 0:
                     pass
                 elif neighbour_x < 0 or neighbour_y < 0 or \
-                        neighbour_x >= map.length or \
+                        neighbour_x >= len(map) or \
                         neighbour_y >= len(map[0]):
                     count += 1
                 elif map[neighbour_x][neighbour_y]:
                     count += 1
         return count
 
-    def generateMap(self) -> [[bool]]:
-        self.cellmap = self.initMap()
+    def generateMap(self, width: int = 20, height: int = 20):
+        self.width = width
+        self.height = height
+        self.cellmap = self.createBlankMap()
         self.cellmap = self.initialiseMap(self.cellmap)
         for i in range(0, self.stepLimit):
             self.cellmap = self.doSimulationStep(self.cellmap)
 
-    def placeTreasure(self, world: [[bool]]):
+    def placeTreasure(self):
         for x in range (0, self.width):
             for y in range(0, self.height):
-                if not world[x][y]:
-                    nbs: int = self.countAliveNeighbours(world, x, y)
+                if not self.cellmap[x][y]:
+                    nbs: int = self.countAliveNeighbours(self.cellmap, x, y)
                     if nbs >= self.treasureHiddenLimit:
-                        self.placeLoot(x, y)
+                        self.treasures.append((x, y))
 
-    def placeLoot(self, x: int, y: int):
-        print('placing loot at '+str(x)+','+str(y))
+    def printMap(self):
+        s: str = ''
+        for i in range(self.height):
+            for j in range(self.width):
+                if self.isTreasure((j, i)):
+                    s += 'X'
+                elif self.cellmap[j][i]:
+                    s += '.'
+                else:
+                    s += ' '
+            s += '\n'
+        print(s)
+
+    def isTreasure(self, pos: (int, int)):
+        for t in self.treasures:
+            if t == pos:
+                return True
+        return False
+
+if __name__ == '__main__':
+    tiles = Map()
+    tiles.generateMap()
+    tiles.placeTreasure()
+    tiles.printMap()
